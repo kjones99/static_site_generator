@@ -25,6 +25,8 @@ class HTMLNode():
     
     def props_to_html(self):
         props_str = ''
+        if not self.props:
+            return props_str
         for key in self.props:
-            props_str += f' {str(key)}={str(self.props[key])}'
+            props_str += f' {str(key)}="{str(self.props[key])}"'
         return props_str
