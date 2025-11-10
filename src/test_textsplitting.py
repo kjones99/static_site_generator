@@ -2,33 +2,7 @@ import unittest
 from textnode import TextNode, TextType
 from splitfuncs import extract_markdown_links, extract_markdown_images, split_nodes_image, split_nodes_link, text_to_textnodes
 
-
-class TestTextNode(unittest.TestCase):
-    def test_eq(self):
-        node1 = TextNode("This is a text node", TextType.BOLD)
-        node2 = TextNode("This is a text node", TextType.BOLD)
-        self.assertEqual(node1, node2)
-
-
-    def test_eq_with_url(self):
-        node1 = TextNode("wash ufizi drive me to firenze", TextType.LINK, "phish.net")
-        node2 = TextNode("wash ufizi drive me to firenze", TextType.LINK, "phish.net")
-        self.assertEqual(node1, node2)
-
-    def test_diff_text(self):
-        node1 = TextNode("wash ufizi drive me to firenze", TextType.LINK, "phish.net")
-        node2 = TextNode("you feed from the bottom", TextType.LINK, "phish.net")
-        self.assertNotEqual(node1, node2)
-
-    def test_diff_text_type(self):
-        node1 = TextNode("wash ufizi drive me to firenze", TextType.IMAGE, "phish.net")
-        node2 = TextNode("wash ufizi drive me to firenze", TextType.LINK, "phish.net")
-        self.assertNotEqual(node1, node2)
-
-    def test_diff_url(self):
-        node1 = TextNode("wash ufizi drive me to firenze", TextType.IMAGE, "phish.net")
-        node2 = TextNode("wash ufizi drive me to firenze", TextType.LINK, "phish.com")
-        self.assertNotEqual(node1, node2)
+class TestTextSplitting(unittest.TestCase):
 
     def test_extract_markdown_images(self):
         matches = extract_markdown_images(
@@ -147,6 +121,59 @@ class TestTextNode(unittest.TestCase):
                 TextNode("and a", TextType.CODE),
                 TextNode(" ", TextType.TEXT),
                 TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            new_nodes
+        )
+
+    def test_text_trailing_link(self):
+        text = '**text** _with_ an italic word and a ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) `and a` [link](https://boot.dev) woohoo'
+        new_nodes = text_to_textnodes(text)
+        self.assertEqual(
+            [
+                TextNode("text", TextType.BOLD),
+                TextNode(" ", TextType.TEXT),
+                TextNode("with", TextType.ITALIC),
+                TextNode(" an italic word and a ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" ", TextType.TEXT),
+                TextNode("and a", TextType.CODE),
+                TextNode(" ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+                TextNode(" woohoo", TextType.TEXT)
+            ],
+            new_nodes
+        )
+
+    def test_text_trailing_image(self):
+        text = '**text** _with_ an italic word and a ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) are we done testing yet?'
+        new_nodes = text_to_textnodes(text)
+        self.assertEqual(
+            [
+                TextNode("text", TextType.BOLD),
+                TextNode(" ", TextType.TEXT),
+                TextNode("with", TextType.ITALIC),
+                TextNode(" an italic word and a ", TextType.TEXT),
+                TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                TextNode(" are we done testing yet?", TextType.TEXT),
+            ],
+            new_nodes
+        )
+
+    def test_text_starting_with_link(self):
+        text = '[link](https://boot.dev) is a pretty fun `coding` _platform_ ![I mean look at this guy](https://imgur.com/t/bear) I think i might get **good** at this'
+        new_nodes = text_to_textnodes(text)
+        self.assertEqual(
+            [
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+                TextNode(" is a pretty fun ", TextType.TEXT),
+                TextNode("coding", TextType.CODE),
+                TextNode(" ", TextType.TEXT),
+                TextNode("platform", TextType.ITALIC),
+                TextNode(" ", TextType.TEXT),
+                TextNode("I mean look at this guy", TextType.IMAGE, "https://imgur.com/t/bear"),
+                TextNode(" I think i might get ", TextType.TEXT),
+                TextNode("good", TextType.BOLD),
+                TextNode(" at this", TextType.TEXT),
             ],
             new_nodes
         )

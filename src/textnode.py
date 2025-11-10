@@ -1,5 +1,6 @@
 from enum import Enum
 from leafnode import LeafNode
+import re
 
 class TextType(Enum):
     TEXT = "text"
@@ -42,23 +43,3 @@ def text_node_to_html_node(text_node):
             return LeafNode('img', '', {'src' : text_node.url, 'alt' : text_node.text})
         case _:
             raise Exception("invalid html tag: text type not recognized")
-        
-def split_nodes_delimiter(old_nodes, delimiter, text_type):
-    new_nodes = []
-    for node in old_nodes:
-        if node.text_type != TextType.TEXT:
-            new_nodes.append(node)
-            continue
-        text_sections = node.text.split(delimiter)
-        if len(text_sections) % 2 == 0:
-            raise Exception("Error: unmatched delimiter")
-        for i in range(len(text_sections)):
-            if text_sections[i] == "":
-                continue
-            elif i % 2 == 0:
-                new_nodes.append(TextNode(text_sections[i], TextType.TEXT))
-            else:
-                new_nodes.append(TextNode(text_sections[i], text_type))
-    return new_nodes
-            
-    
