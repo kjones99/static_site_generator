@@ -1,6 +1,7 @@
 import re
 from textnode import TextType, TextNode
 
+#search a list of textnodes for text sections that indicate bold, italic etc...
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for node in old_nodes:
@@ -19,6 +20,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 new_nodes.append(TextNode(text_sections[i], text_type))
     return new_nodes
 
+#search a list of nodes and look for images in the markdown text
 def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -36,10 +38,12 @@ def split_nodes_image(old_nodes):
             new_nodes.append(TextNode(node.text, TextType.TEXT))
     return new_nodes
 
+#use regex formatting to pull the strings for image link and description out of the parent node's text
 def extract_markdown_images(text):
     matches = re.findall(r"!\[(.*?)\]\((.*?)\)", text)
     return matches
 
+#search a list of nodes and look for links in the markdown text
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -57,10 +61,12 @@ def split_nodes_link(old_nodes):
             new_nodes.append(TextNode(node.text, TextType.TEXT)) 
     return new_nodes
 
+#use regex formatting to pull the strings for the link it's description out of the parent node's text
 def extract_markdown_links(text):
     matches = re.findall(r"\[(.*?)\]\((.*?)\)",text)
     return matches
 
+#Take in text and return a list of TextNodes whose types are indicated by markdown formatting
 def text_to_textnodes(text):
     new_nodes = [TextNode(text, TextType.TEXT)]
     new_nodes = split_nodes_delimiter(new_nodes, '**', TextType.BOLD)

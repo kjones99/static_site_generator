@@ -15,14 +15,16 @@ class HTMLNode():
         if self.props:
             node_str += f'{self.props_to_html()}\n'
         if self.children:
-            node_str += 'Child HTML Nodes\n'
+            node_str += 'Child HTML Nodes'
             for i in range(len(self.children)):
-                node_str += f'Child 1:\n{self.children[i].__repr__()}'
+                node_str += f'\n{self.children[i].__repr__()}'
         return node_str
     
+#create base version of to_html to be overwritten by child classes
     def to_html(self):
         raise NotImplementedError
     
+#modify props field to proper HTML format if the node has a value stored
     def props_to_html(self):
         props_str = ''
         if not self.props:

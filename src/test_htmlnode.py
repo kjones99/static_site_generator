@@ -12,7 +12,7 @@ class TestHTMLNode(unittest.TestCase):
         node1 = HTMLNode('<p>', 'wash ufizi drive me to firenze', props={'href': 'https://www.phish.net', 'googly' : 1234})
         node1_repr_str = 'tag: <p>\ntext: wash ufizi drive me to firenze\n href="https://www.phish.net" googly="1234"\n'
         node2 = HTMLNode('<p>', 'wash ufizi drive me to firenze', [node1],{'href': 'https://www.phish.net', 'googly' : 1234})
-        node2_repr_str = f'{node1_repr_str}Child HTML Nodes\nChild 1:\n{node1_repr_str}'
+        node2_repr_str = f'{node1_repr_str}Child HTML Nodes\n{node1_repr_str}'
         self.assertEqual(repr(node2), node2_repr_str)
 
     def test_props_to_html(self):

@@ -1,6 +1,5 @@
 from enum import Enum
 from leafnode import LeafNode
-import re
 
 class TextType(Enum):
     TEXT = "text"
@@ -26,7 +25,7 @@ class TextNode():
     def __repr__ (self):
         return f'TextNode({self.text}, {self.text_type.value}, {self.url})'
     
-#function to convert TextNode to LeafNode
+#function to convert TextNode to an HTML LeafNode
 def text_node_to_html_node(text_node):
     match text_node.text_type:
         case TextType.TEXT:
