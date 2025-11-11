@@ -6,9 +6,10 @@ from pathlib import Path
 def copy_static_to_destination_directory():
     #get the root directory of the project then create the path to public and static folders from that
     root_directory = Path(__file__).parent.parent
-    target_directory = os.path.join(root_directory, 'public')
+    target_directory = os.path.join(root_directory, 'docs')
     source_directory = os.path.join(root_directory, 'static')
     
+    os.makedirs(target_directory, exist_ok=True)
     #loop through contents of the public directory and delete them
     for item in os.listdir(target_directory):
         current_path = os.path.join(target_directory, item)

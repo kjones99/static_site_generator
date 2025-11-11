@@ -2,8 +2,7 @@ import os
 from markdownconverting import markdown_to_html_node, extract_title
 from pathlib import Path
 
-def generate_page(from_path, template_path, dest_path):
-    print(f'Generating page from {from_path} to {dest_path} using {template_path}')
+def generate_page(from_path, template_path, dest_path, base_path):
     #read markdown text from the file at from_path
     try:
         with open(from_path, 'r') as file:
@@ -26,6 +25,8 @@ def generate_page(from_path, template_path, dest_path):
     #replace title and content placeholders in template with the page_title and html_string we got above
     template = template.replace('{{ Title }}', page_title)
     template = template.replace('{{ Content }}', page_html_string)
+    #template = template.replace('href="/', f'href="{base_path}')
+    #template = template.replace('src="/', f'src="{base_path}')
 
     #Try and create the destination parent directory, if it already exists do nothing
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
@@ -33,7 +34,7 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, 'w') as file:
         file.write(template)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, base_path):
     #loop through items at the current source directory and check if they are files or subdirectories
     for item in os.listdir(dir_path_content):
         curr_source_path = Path(dir_path_content) / item
@@ -43,8 +44,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         if curr_source_path.is_file():
             if curr_source_path.suffix != '.md':
                 continue
-            generate_page(curr_source_path, template_path, curr_dest_path.with_suffix('.html'))
+            generate_page(curr_source_path, template_path, curr_dest_path.with_suffix('.html'), base_path)
         #if you find a directory recursively call this function on that directory also updating the dest_path
         else:
-            generate_pages_recursive(curr_source_path, template_path, curr_dest_path)
+            generate_pages_recursive(curr_source_path, template_path, curr_dest_path, base_path)
             
