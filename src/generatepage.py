@@ -25,8 +25,8 @@ def generate_page(from_path, template_path, dest_path, base_path):
     #replace title and content placeholders in template with the page_title and html_string we got above
     template = template.replace('{{ Title }}', page_title)
     template = template.replace('{{ Content }}', page_html_string)
-    #template = template.replace('href="/', f'href="{base_path}')
-    #template = template.replace('src="/', f'src="{base_path}')
+    template = template.replace('href="/', f'href="{base_path}')
+    template = template.replace('src="/', f'src="{base_path}')
 
     #Try and create the destination parent directory, if it already exists do nothing
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
